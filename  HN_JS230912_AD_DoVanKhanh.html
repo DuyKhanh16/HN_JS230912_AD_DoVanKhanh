@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        p {
+            font-size: 20px;
+            font-weight: 500;
+            color: beige;
+        }
+
+        h1 {
+            color: beige;
+        }
+
+        h2 {
+            color: beige;
+        }
+        .img{
+            width: 50px;
+            height: 50px;
+        }
+        .container {
+            width: 1000px;
+            margin: 0 auto;
+            background-color: #CCC;
+            text-align: center;
+        }
+
+        .start,
+        .reset {
+            width: 100px;
+            height: 30px;
+        }
+
+        .watch {
+            font-size: 30px;
+            font-weight: 600;
+        }
+
+        .container__head {
+            margin: 0 auto;
+            width: 98%;
+            height: 100px;
+            display: flex;
+            justify-content: space-between;
+            background-color: rgb(205, 45, 45);
+        }
+
+        .container__head--topwatch {
+            background-color: rgb(167, 31, 31);
+        }
+
+        .container__main {
+            margin: 0 auto;
+            width: 98%;
+            background-color: white;
+        }
+
+        .playerList {
+            display: flex;
+
+        }
+
+        .container__main--nameplayer {
+            display: flex;
+            /* flex-direction: row; */
+        }
+
+        .namePlayer {
+            width: 500px;
+            height: 50px;
+            color: grey;
+            margin-top: 5px;
+            margin-left: 10px;
+            font-size: 30px;
+            text-align: left;
+        }
+
+        .container__main--points {
+            display: flex;
+            margin-left: 250px;
+        }
+
+        .deletId{
+            width: 30px;
+            height: 30px;
+            margin: 10px;
+            border-radius: 50px;
+            background-color: red ;
+        }
+
+        .pointsDow,
+        .pointsUp {
+            width: 30px;
+            height: 50px;
+            font-size: 20px;
+        }
+
+        .playerPoints {
+            width: 50px;
+            color: rgb(38, 36, 36);
+            text-align: center;
+            margin-top: 10px;
+            font-size: 30px;
+        }
+
+        .container__add {
+            width: 98%;
+            height: 70px;
+            margin: 0 auto;
+            background-color: rgb(205, 45, 45);
+            text-align: center;
+        }
+
+        input {
+            width: 800px;
+            height: 50px;
+            background-color: rgb(167, 31, 31);
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+
+        .add {
+            width: 150px;
+            height: 50px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="container__head">
+            <div class="container__head--total">
+                <p class="player">player: <span class="numberPlayer">0</span></p>
+                <p class="total">Total Points : <span class="totalPoints">0</span></p>
+            </div>
+            <h1>RIKKEI SCOREBOARD</h1>
+            <div class="container__head--topwatch">
+                <h2>STOP WATCH</h2>
+                <p class="watch">0</p>
+                <button class="start" onclick="startWatch()">Sart</button>
+                <button class="reset" onclick="restWatch()">Reset</button>
+            </div>
+        </div>
+        <div class="container__main">
+           
+        </div>
+        <div class="container__add">
+            <input class="inputName" type="text" placeholder="Add Player's Name">
+            <button class="add" onclick="addPlayer()">ADD PLAYER</button>
+        </div>
+    </div>
+    <script>
+        function startWatch() {
+           let a= setInterval(() => {
+                document.getElementsByClassName("watch")[0].innerHTML = ++document.getElementsByClassName("watch")[0].innerHTML;
+            }, 1000);
+        }
+        function restWatch() {
+            // startWatch();
+            document.getElementsByClassName("watch")[0].innerHTML =0;
+            // clearInterval(a);
+        }
+        function uuId() {
+          return  Math.floor(Math.random() * 1000);
+        
+        }
+        function addPlayer() {
+            let player = JSON.parse(localStorage.getItem("players")) || [];
+            let inputValue = document.getElementsByClassName("inputName")[0].value;
+            let obj = {
+                name: inputValue,
+                count: 0,
+                id: uuId()
+            }
+            player.push(obj);
+            localStorage.setItem("players", JSON.stringify(player));
+            document.getElementsByClassName("inputName")[0].value = "";
+            playerList();
+        }
+        function playerList() {
+            let list = JSON.parse(localStorage.getItem("players")) || [];
+            let text = "";
+            let total=0;
+            for (let i = 0; i < list.length; i++) {
+                text +=
+                    `<div class="playerList">
+                <div class="container__main--nameplayer">
+                <button class="deletId" onclick="delet(${list[i].id})">x</button>
+                <img class="img" src="./1486504777-crown-optimization-royal-princes-winner-premium-service_81383.png" >
+                <p class="namePlayer">${list[i].name}</p>
+                </div>
+                <div class="container__main--points">
+                <button class="pointsDow" onclick="pointsDow(${list[i].id})">-</button>
+                <p class="playerPoints">${list[i].count}</p>
+                <button class="pointsUp " onclick="pointsUp(${list[i].id})">+</button>
+                </div>
+                </div>`
+                total +=list[i].count;
+               
+            }
+            document.getElementsByClassName("container__main")[0].innerHTML = text;
+            document.getElementsByClassName("totalPoints")[0].innerHTML =total;
+                document.getElementsByClassName("numberPlayer")[0].innerHTML =list.length;
+
+           
+        }
+        playerList();
+
+
+        function pointsUp(id) {
+            let upPoints = JSON.parse(localStorage.getItem("players")) || [];
+            for (let i = 0; i < upPoints.length; i++) {
+                if (upPoints[i].id == id) {
+                    upPoints[i].count = ++upPoints[i].count;
+                    localStorage.setItem("players", JSON.stringify(upPoints));
+                    playerList();
+                }
+            }
+        }
+        pointsUp();
+
+
+        function pointsDow(id) {
+            let downPoints = JSON.parse(localStorage.getItem("players")) || [];
+            for (let i = 0; i < downPoints.length; i++) {
+                if (downPoints[i].id == id && downPoints[i].count > 0) {
+                    downPoints[i].count = --downPoints[i].count;
+                    localStorage.setItem("players", JSON.stringify(downPoints));
+                    playerList();
+                }
+            }
+        }
+        pointsDow();
+
+
+        function delet(id) {
+            let list= JSON.parse(localStorage.getItem("players")) || [];
+            let confirmDelete = confirm("Bạn có muốn xoá người chơi hay không?");
+            if (confirmDelete) {
+                for (let i = 0; i < list.length; i++) {
+                    if (list[i].id == id) {
+                        list.splice(i, 1);
+                        localStorage.setItem("players", JSON.stringify(list));
+                        playerList();
+                    }
+                }
+            }
+        }
+
+    </script>
+</body>
+
+</html>
